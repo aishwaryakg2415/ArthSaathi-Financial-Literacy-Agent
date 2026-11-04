@@ -1,0 +1,372 @@
+/* ============================================================
+   ArthSaathi – Digital Financial Literacy Agent
+   Plain CSS – no preprocessors, no frameworks
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ibm-blue:        #0f62fe;
+  --ibm-blue-dark:   #0043ce;
+  --ibm-blue-light:  #d0e2ff;
+  --ibm-red:         #da1e28;
+  --ibm-green:       #198038;
+  --bg:              #f4f4f4;
+  --surface:         #ffffff;
+  --border:          #e0e0e0;
+  --text:            #161616;
+  --text-muted:      #525252;
+  --user-bubble-bg:  #0f62fe;
+  --user-bubble-fg:  #ffffff;
+  --agent-bubble-bg: #ffffff;
+  --agent-bubble-fg: #161616;
+  --chip-bg:         #e8f0fe;
+  --chip-fg:         #0043ce;
+  --radius:          12px;
+  --font:            -apple-system, "Segoe UI", system-ui, Arial, sans-serif;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font);
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* ── Layout shell ───────────────────────────────────────── */
+.shell {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;          /* dynamic viewport height */
+  max-width: 780px;
+  margin: 0 auto;
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--border);
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.app-header {
+  background: var(--ibm-blue);
+  color: #fff;
+  padding: 14px 20px 12px;
+  flex-shrink: 0;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.app-name {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.granite-badge {
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 20px;
+  padding: 2px 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+}
+
+.tagline {
+  margin-top: 4px;
+  font-size: 0.88rem;
+  opacity: 0.88;
+}
+
+/* ── Controls row ───────────────────────────────────────── */
+.controls-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  background: #fafafa;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.lang-select {
+  font-size: 0.95rem;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.btn-scam {
+  font-size: 0.92rem;
+  font-weight: 600;
+  padding: 7px 14px;
+  border: 2px solid var(--ibm-red);
+  border-radius: 8px;
+  background: #fff3f3;
+  color: var(--ibm-red);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-scam:hover { background: #ffd7d9; }
+
+/* ── Scam checker panel ─────────────────────────────────── */
+.scam-panel {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: #fff8f8;
+  flex-shrink: 0;
+  display: none;
+}
+.scam-panel.open { display: block; }
+
+.scam-panel label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--ibm-red);
+}
+
+.scam-textarea {
+  width: 100%;
+  min-height: 90px;
+  padding: 8px 10px;
+  font-size: 0.95rem;
+  border: 1px solid #ffb3b8;
+  border-radius: 8px;
+  resize: vertical;
+  font-family: var(--font);
+}
+
+.scam-send-btn {
+  margin-top: 8px;
+  padding: 8px 18px;
+  background: var(--ibm-red);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.scam-send-btn:hover { background: #b81921; }
+
+/* ── Quick chips ────────────────────────────────────────── */
+.chips-row {
+  display: flex;
+  gap: 8px;
+  padding: 10px 16px;
+  overflow-x: auto;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+  scrollbar-width: thin;
+}
+
+.chip {
+  white-space: nowrap;
+  padding: 7px 14px;
+  background: var(--chip-bg);
+  color: var(--chip-fg);
+  border: 1px solid #a8c7fa;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.chip:hover { background: #bdd0ff; }
+
+/* ── Chat window ────────────────────────────────────────── */
+.chat-window {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* message rows */
+.msg-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+.msg-row.user  { justify-content: flex-end; }
+.msg-row.agent { justify-content: flex-start; }
+
+/* avatars */
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.avatar.agent { background: var(--ibm-blue); color: #fff; }
+.avatar.user  { background: #8d8d8d;          color: #fff; }
+
+/* bubbles */
+.bubble {
+  max-width: 72%;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  line-height: 1.65;
+  word-break: break-word;
+}
+.msg-row.user  .bubble {
+  background: var(--user-bubble-bg);
+  color: var(--user-bubble-fg);
+  border-bottom-right-radius: 3px;
+}
+.msg-row.agent .bubble {
+  background: var(--agent-bubble-bg);
+  color: var(--agent-bubble-fg);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 3px;
+}
+
+/* markdown-rendered content inside agent bubble */
+.bubble ul { padding-left: 1.3em; margin: 4px 0; }
+.bubble ol { padding-left: 1.5em; margin: 4px 0; }
+.bubble li { margin-bottom: 2px; }
+.bubble strong { font-weight: 700; }
+.bubble p { margin: 0 0 6px; }
+.bubble p:last-child { margin-bottom: 0; }
+
+/* typing indicator */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 14px;
+}
+.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #8d8d8d;
+  animation: bounce 1.2s infinite ease-in-out;
+}
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: translateY(0); }
+  40%           { transform: translateY(-7px); }
+}
+
+/* ── Warning bar (XSS / sensitive data) ─────────────────── */
+.warn-bar {
+  display: none;
+  background: #fff3cd;
+  border-top: 3px solid #f1c21b;
+  color: #3e2800;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 9px 16px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.warn-bar.visible { display: block; }
+
+/* ── Input row ───────────────────────────────────────────── */
+.input-row {
+  display: flex;
+  gap: 8px;
+  padding: 10px 16px 12px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  flex-shrink: 0;
+  align-items: flex-end;
+}
+
+.msg-input {
+  flex: 1;
+  font-size: 1rem;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-family: var(--font);
+  resize: none;
+  min-height: 46px;
+  max-height: 130px;
+  overflow-y: auto;
+  line-height: 1.5;
+}
+.msg-input:focus { outline: 2px solid var(--ibm-blue); outline-offset: 1px; }
+
+.send-btn {
+  padding: 10px 18px;
+  background: var(--ibm-blue);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+  height: 46px;
+  white-space: nowrap;
+}
+.send-btn:hover   { background: var(--ibm-blue-dark); }
+.send-btn:disabled { background: #8d8d8d; cursor: not-allowed; }
+
+/* ── Emergency banner ────────────────────────────────────── */
+.emergency-banner {
+  background: var(--ibm-red);
+  color: #fff;
+  text-align: center;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 9px 16px;
+  flex-shrink: 0;
+}
+.emergency-banner a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* ── Footer disclaimer ───────────────────────────────────── */
+.footer-disclaimer {
+  background: #f4f4f4;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  text-align: center;
+  padding: 8px 16px;
+  flex-shrink: 0;
+  line-height: 1.5;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 420px) {
+  .app-name   { font-size: 1.15rem; }
+  .bubble     { max-width: 86%; font-size: 0.95rem; }
+  .send-btn   { padding: 10px 12px; }
+}
+
+/* ── Rich replies: headings, tables, code ── */
+.bubble h4 { margin: 0.6em 0 0.3em; font-size: 1.05em; }
+.bubble hr { border: 0; border-top: 1px solid #d0d7e2; margin: 0.6em 0; }
+.bubble code { background: #eef2f8; padding: 0 4px; border-radius: 4px; font-size: 0.92em; }
+.bubble .table-wrap { overflow-x: auto; margin: 0.5em 0; }
+.bubble table { border-collapse: collapse; width: 100%; font-size: 0.92em; }
+.bubble th, .bubble td { border: 1px solid #d0d7e2; padding: 6px 8px; text-align: left; vertical-align: top; }
+.bubble th { background: #e8f0fe; }

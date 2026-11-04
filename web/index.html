@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="ArthSaathi – Digital Financial Literacy Agent powered by IBM Granite on watsonx.ai" />
+  <title>ArthSaathi – Digital Financial Literacy Agent</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="shell" role="main">
+
+  <!-- ── Header ── -->
+  <header class="app-header" role="banner">
+    <div class="header-top">
+      <span class="app-name">🪙 ArthSaathi</span>
+      <span class="granite-badge">IBM Granite · watsonx.ai</span>
+    </div>
+    <p class="tagline">Learn digital money safely – in your language</p>
+  </header>
+
+  <!-- ── Controls row (language + scam checker toggle) ── -->
+  <div class="controls-row">
+    <label for="lang-select" class="sr-only">Reply language</label>
+    <select id="lang-select" class="lang-select" aria-label="Choose reply language">
+      <option value="">English</option>
+      <option value="हिंदी">हिंदी</option>
+      <option value="ಕನ್ನಡ">ಕನ್ನಡ</option>
+      <option value="தமிழ்">தமிழ்</option>
+      <option value="मराठी">मराठी</option>
+      <option value="বাংলা">বাংলা</option>
+    </select>
+    <button class="btn-scam" id="scam-toggle-btn" aria-expanded="false" aria-controls="scam-panel">
+      🚨 Scam Checker
+    </button>
+  </div>
+
+  <!-- ── Scam checker panel ── -->
+  <div class="scam-panel" id="scam-panel" role="region" aria-label="Scam Checker" aria-hidden="true">
+    <label for="scam-textarea">Paste the suspicious SMS / WhatsApp message below:</label>
+    <textarea
+      id="scam-textarea"
+      class="scam-textarea"
+      placeholder="Paste text here…"
+      rows="4"
+      aria-label="Suspicious message text"
+    ></textarea>
+    <button class="scam-send-btn" id="scam-send-btn">Check for Scam Red Flags</button>
+  </div>
+
+  <!-- ── Quick-question chips ── -->
+  <nav class="chips-row" aria-label="Quick questions">
+    <button class="chip" data-q="How do I send money via UPI?">💸 UPI transfers</button>
+    <button class="chip" data-q="Is this message a scam?">🔍 Is this a scam?</button>
+    <button class="chip" data-q="Calculate my loan EMI">🧮 Loan EMI</button>
+    <button class="chip" data-q="Help me make a budget">📊 Make a budget</button>
+    <button class="chip" data-q="Government saving schemes">🏦 Saving schemes</button>
+    <button class="chip" data-q="I was cheated – what now?">🆘 I was cheated</button>
+  </nav>
+
+  <!-- ── Chat window ── -->
+  <div class="chat-window" id="chat-window" role="log" aria-live="polite" aria-label="Conversation">
+    <!-- Welcome message injected by app.js -->
+  </div>
+
+  <!-- ── Sensitive data warning ── -->
+  <div class="warn-bar" id="warn-bar" role="alert" aria-live="assertive">
+    ⚠️ Never share your PIN, OTP, CVV or card number – not even with ArthSaathi.
+  </div>
+
+  <!-- ── Input row ── -->
+  <div class="input-row">
+    <textarea
+      id="msg-input"
+      class="msg-input"
+      placeholder="Ask anything about money, payments, savings…"
+      rows="1"
+      aria-label="Your message"
+      maxlength="2000"
+    ></textarea>
+    <button class="send-btn" id="send-btn" aria-label="Send message">Send ➤</button>
+  </div>
+
+  <!-- ── Emergency banner ── -->
+  <div class="emergency-banner" role="complementary" aria-label="Emergency fraud helpline">
+    🚨 Lost money to fraud? Call <strong>1930</strong> or visit
+    <a href="https://cybercrime.gov.in" target="_blank" rel="noopener noreferrer">cybercrime.gov.in</a>
+  </div>
+
+  <!-- ── Footer disclaimer ── -->
+  <footer class="footer-disclaimer" role="contentinfo">
+    ArthSaathi gives general financial education, not investment advice.
+    Powered by <strong>IBM Granite</strong> on watsonx.ai via Langflow.
+  </footer>
+
+</div><!-- /.shell -->
+
+<!-- Config must be loaded before app.js -->
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
