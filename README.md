@@ -6,6 +6,8 @@ IBM SkillsBuild University Engagement (AICTE 2026) – **Problem Statement No. 7
 
 ArthSaathi ("money companion") is an agentic AI assistant that teaches people in India how to use digital finance safely – UPI, scam safety, interest rates & loans, budgeting and government schemes – in their own language, with answers grounded in trusted sources.
 
+![ArthSaathi web app](assets/screens/ui_hero.png)
+
 ## Built with
 | Technology | Used for |
 |---|---|

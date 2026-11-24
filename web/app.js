@@ -43,6 +43,38 @@
       .replace(/'/g, '&#39;');
   }
 
+  // ── LaTeX → plain readable maths ──────────────────────────
+  // Granite sometimes writes formulas as LaTeX (\[ \frac{a}{b} \]).
+  // Convert them to plain text like "(a) ÷ (b)" so every user can read them.
+  function delatex(text) {
+    let s = text
+      .replace(/\$\$|\\\[|\\\]|\\\(|\\\)/g, '')
+      .replace(/\\left|\\right/g, '')
+      .replace(/\\[,;:!]|\\quad|\\qquad/g, ' ')
+      .replace(/\{,\}/g, ',')
+      .replace(/\\%/g, '%')
+      .replace(/\\times/g, '×')
+      .replace(/\\div/g, '÷')
+      .replace(/\\cdot/g, '·')
+      .replace(/\\approx/g, '≈')
+      .replace(/\\leq?/g, '≤')
+      .replace(/\\geq?/g, '≥')
+      .replace(/\\neq/g, '≠')
+      .replace(/\\rightarrow|\\to/g, '→')
+      .replace(/\\₹|\\rupee/g, '₹');
+    // Innermost-first so nested groups resolve: \text{..}, \mathbf{..}, \frac{a}{b}
+    for (let i = 0; i < 6; i++) {
+      const before = s;
+      s = s
+        .replace(/\\(?:text|textbf|mathrm|mathbf|operatorname)\{([^{}]*)\}/g, '$1')
+        .replace(/\\[dt]?frac\{([^{}]*)\}\{([^{}]*)\}/g, '($1) ÷ ($2)')
+        .replace(/\^\{([^{}]*)\}/g, '^$1')
+        .replace(/_\{([^{}]*)\}/g, '_$1');
+      if (s === before) break;
+    }
+    return s.replace(/[ \t]{2,}/g, ' ');
+  }
+
   // ── Simple markdown → HTML ────────────────────────────────
   // Operates on already-escaped text to stay XSS-safe.
   function renderMarkdown(escaped) {
@@ -136,7 +168,7 @@
 
     const avatar  = document.createElement('div');
     avatar.className = 'avatar ' + role;
-    avatar.textContent = role === 'user' ? 'You' : 'AS';
+    avatar.textContent = role === 'user' ? 'you' : '₹';
     avatar.setAttribute('aria-hidden', 'true');
 
     const bubble  = document.createElement('div');
@@ -173,7 +205,7 @@
 
     const avatar = document.createElement('div');
     avatar.className = 'avatar agent';
-    avatar.textContent = 'AS';
+    avatar.textContent = '₹';
     avatar.setAttribute('aria-hidden', 'true');
 
     const bubble = document.createElement('div');
@@ -279,7 +311,7 @@
       }
 
       hideTyping();
-      appendMessage('agent', renderMarkdown(escapeHTML(replyText)));
+      appendMessage('agent', renderMarkdown(escapeHTML(delatex(replyText))));
 
     } catch (err) {
       hideTyping();
@@ -326,20 +358,81 @@
   }
   msgInput.addEventListener('input', autoResize);
 
-  // ── Event: quick chips ────────────────────────────────────
-  document.querySelectorAll('.chip').forEach(function (chip) {
-    chip.addEventListener('click', function () {
-      sendMessage(chip.dataset.q);
+  // ── Scroll to the chat card ───────────────────────────────
+  const chatSection = document.getElementById('chat');
+  function goToChat() {
+    chatSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ── Event: feature cards / quick questions ────────────────
+  document.querySelectorAll('[data-q]').forEach(function (card) {
+    card.addEventListener('click', function () {
+      goToChat();
+      sendMessage(card.dataset.q);
     });
   });
 
   // ── Event: scam checker toggle ────────────────────────────
+  function setScamPanel(open) {
+    scamPanel.classList.toggle('open', open);
+    scamToggleBtn.setAttribute('aria-expanded', String(open));
+    scamPanel.setAttribute('aria-hidden',       String(!open));
+    if (open) scamTextarea.focus({ preventScroll: true });
+  }
   scamToggleBtn.addEventListener('click', function () {
-    const isOpen = scamPanel.classList.toggle('open');
-    scamToggleBtn.setAttribute('aria-expanded', String(isOpen));
-    scamPanel.setAttribute('aria-hidden',       String(!isOpen));
-    if (isOpen) scamTextarea.focus();
+    setScamPanel(!scamPanel.classList.contains('open'));
   });
+
+  // ── Hero buttons ──────────────────────────────────────────
+  document.getElementById('cta-chat').addEventListener('click', function () {
+    goToChat();
+    msgInput.focus({ preventScroll: true });
+  });
+  document.getElementById('cta-scam').addEventListener('click', function () {
+    goToChat();
+    setScamPanel(true);
+  });
+
+  // ── Hero: typewriter greeting in many languages ───────────
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const greetEl = document.getElementById('greet-word');
+  const greetings = ['नमस्ते,', 'ನಮಸ್ಕಾರ,', 'வணக்கம்,', 'hello,', 'নমস্কার,', 'నమస్తే,'];
+  if (greetEl && !reduceMotion) {
+    let gi = 0;
+    const typeWord = function (word, i) {
+      // Array.from keeps Indic combining marks grouped reasonably
+      const chars = Array.from(word);
+      greetEl.textContent = chars.slice(0, i).join('');
+      if (i < chars.length) {
+        setTimeout(function () { typeWord(word, i + 1); }, 110);
+      } else {
+        setTimeout(function () { eraseWord(word, chars.length); }, 1600);
+      }
+    };
+    const eraseWord = function (word, i) {
+      const chars = Array.from(word);
+      greetEl.textContent = chars.slice(0, i).join('');
+      if (i > 0) {
+        setTimeout(function () { eraseWord(word, i - 1); }, 55);
+      } else {
+        gi = (gi + 1) % greetings.length;
+        setTimeout(function () { typeWord(greetings[gi], 1); }, 250);
+      }
+    };
+    setTimeout(function () { eraseWord(greetings[0], Array.from(greetings[0]).length); }, 1600);
+  }
+
+  // ── Hero: polaroids pop in one at a time ──────────────────
+  const polaroids = document.querySelectorAll('.polaroid');
+  if (polaroids.length && !reduceMotion) {
+    let pi = 0;
+    polaroids[0].classList.add('show');
+    setInterval(function () {
+      polaroids[pi].classList.remove('show');
+      pi = (pi + 1) % polaroids.length;
+      polaroids[pi].classList.add('show');
+    }, 2600);
+  }
 
   // ── Event: scam send ─────────────────────────────────────
   scamSendBtn.addEventListener('click', function () {
@@ -361,7 +454,7 @@
       '- Spotting scams and fraud\n' +
       '- Savings and government schemes\n' +
       '- Budgeting and loan EMIs\n\n' +
-      'Type your question below, or tap one of the quick buttons above.\n' +
+      'Type your question below, or tap one of the cards above.\n' +
       'Choose your preferred language from the dropdown. 🌐'
     ))
   );
